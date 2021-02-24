@@ -32,6 +32,19 @@ dependencies:
   # 开源软件包，其中包含数千个最常用的英文单词以及一些实用功能
   english_words: ^3.1.5
 
+  # 谷歌地图
+  google_maps_flutter: ^0.5.11
+
+  # 获取软件包名，版本名，版本号等信息
+  package_info: ^0.4.0+2
+
+  # http/json
+  http: ^0.12.0+1
+  json_serializable: ^2.0.2
+
+  # 高德地图
+  # amap_flutter_map: ^1.0.0
+
 dev_dependencies:
   # flutter 启动图标库
   flutter_launcher_icons: "^0.8.0"
@@ -41,6 +54,10 @@ flutter_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/icon/launcher_icon.png"
+
+  # Google 中广泛使用的 lint 规则
+  pedantic: ^1.4.0
+  build_runner: ^1.2.7
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -83,3 +100,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
