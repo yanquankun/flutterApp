@@ -20,7 +20,7 @@ class _googleMapState extends State<googleMap> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Maps Sample App'),
+          title: Text('谷歌地图'),
           backgroundColor: Colors.green[700],
         ),
         body: GoogleMap(
