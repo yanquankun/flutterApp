@@ -1,6 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 
+var _saved = new Set<WordPair>();
+
+class wordDetail extends StatefulWidget {
+  @override
+  _wordDetailState createState() => _wordDetailState();
+}
+
+class _wordDetailState extends State<wordDetail> {
+  final _biggerFont = TextStyle(fontSize: 18.0);
+
+  @override
+  Widget build(BuildContext context) {
+    final tiles = _saved.map(
+      (WordPair pair) {
+        return ListTile(
+          title: Text(
+            pair.asPascalCase,
+            style: _biggerFont,
+          ),
+          trailing: Icon(
+            //  添加一个心形 ❤️图标到 ListTiles以启用收藏功能
+            Icons.favorite,
+            color: Colors.red,
+          ),
+          onTap: () {
+            setState(() {
+              _saved.remove(pair);
+            });
+          },
+        );
+      },
+    );
+
+    // ListTile 的 divideTiles() 方法在每个 ListTile 之间添加 1 像素的分割线
+    // 该 divided 变量持有最终的列表项
+    final List<Widget> divided =
+        ListTile.divideTiles(context: context, tiles: tiles).toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('单词收藏'),
+      ),
+      body: ListView(children: divided),
+    );
+  }
+}
+
 class RandomWords extends StatefulWidget {
   @override
   _RandomWordsState createState() => _RandomWordsState();
@@ -9,19 +56,11 @@ class RandomWords extends StatefulWidget {
 class _RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
   // 集合存储用户喜欢（收藏）的单词对
-  final Set<WordPair> _saved = new Set<WordPair>();
+  // final Set<WordPair> _saved = new Set<WordPair>();
   final _biggerFont = TextStyle(fontSize: 18.0);
 
   @override
   Widget build(BuildContext context) {
-    // final wordPair = WordPair.random();
-    // return Text(
-    //   wordPair.asPascalCase,
-    //   style: TextStyle(
-    //     color: Colors.black,
-    //     fontSize: 30.0,
-    //   ),
-    // );
     return Scaffold(
       appBar: AppBar(
         // 跳转收藏页
@@ -33,63 +72,19 @@ class _RandomWordsState extends State<RandomWords> {
           ),
         ),
         actions: <Widget>[
-          new IconButton(icon: const Icon(Icons.list), onPressed: _pushSaved)
+          new IconButton(icon: const Icon(Icons.list), onPressed: _pushed)
         ],
       ),
       body: _buildSuggestions(),
     );
   }
 
-  void _pushSaved() {
-    Navigator.of(context).push(
-      new MaterialPageRoute<void>(
-        builder: (BuildContext context) {
-          final Iterable<ListTile> tiles = _saved.map(
-                (WordPair pair) {
-              return new ListTile(
-                title: new Text(
-                  pair.asPascalCase,
-                  style: _biggerFont,
-                ),
-                trailing: new Icon(
-                  //  添加一个心形 ❤️图标到 ListTiles以启用收藏功能
-                  Icons.favorite,
-                  color: Colors.red,
-                ),
-                onTap: () {
-                  setState(() {
-                    _saved.remove(pair);
-                  });
-                },
-              );
-            },
-          );
-
-          // ListTile 的 divideTiles() 方法在每个 ListTile 之间添加 1 像素的分割线
-          // 该 divided 变量持有最终的列表项
-          final List<Widget> divided = ListTile.divideTiles(
-            context: context,
-            tiles: tiles,
-          ).toList();
-
-          // Navigator（导航器）会在应用栏中自动添加一个"返回"按钮，无需调用Navigator.pop，点击后退按钮就会返回到主页路由
-          return new Scaffold(
-            appBar: new AppBar(
-              title: const Text('单词收藏'),
-            ),
-            body: new ListView(children: divided),
-            // bottomNavigationBar: BottomNavigationBar(
-            //   items: [
-            //     BottomNavigationBarItem(label: "首页", icon: Icon(Icons.home)),
-            //     BottomNavigationBarItem(
-            //         label: "地图", icon: Icon(Icons.recommend)),
-            //     // BottomNavigationBarItem(label: "我的", icon: Icon(Icons.person))
-            //   ],
-            // ),
-          );
-        },
-      ),
-    );
+  void _pushed() {
+    Navigator.pushNamed(context, 'wordDetail').then((value) => {
+          setState(() {
+            _buildSuggestions();
+          }),
+        });
   }
 
   Widget _buildSuggestions() {

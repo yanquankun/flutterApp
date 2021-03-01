@@ -18,6 +18,9 @@ class MintApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.green,
       ),
+      routes: <String, WidgetBuilder>{
+        'wordDetail': (context) => wordDetail(),
+      },
       home: Tabs(),
     );
   }
