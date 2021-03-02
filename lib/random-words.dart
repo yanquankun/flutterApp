@@ -72,7 +72,7 @@ class _RandomWordsState extends State<RandomWords> {
           ),
         ),
         actions: <Widget>[
-          new IconButton(icon: const Icon(Icons.list), onPressed: _pushed)
+          IconButton(icon: const Icon(Icons.list), onPressed: _pushed)
         ],
       ),
       body: _buildSuggestions(),
@@ -107,13 +107,13 @@ class _RandomWordsState extends State<RandomWords> {
 
   Widget _buildRow(WordPair pair) {
     // 检查确保单词对还没有添加到收藏夹中
-    final bool alreadySaved = _saved.contains(pair);
+    final alreadySaved = _saved.contains(pair);
     return ListTile(
       title: Text(
         pair.asPascalCase,
         style: _biggerFont,
       ),
-      trailing: new Icon(
+      trailing: Icon(
         //  添加一个心形 ❤️图标到 ListTiles以启用收藏功能
         alreadySaved ? Icons.favorite : Icons.favorite_border,
         color: alreadySaved ? Colors.red : null,

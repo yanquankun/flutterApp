@@ -8,6 +8,9 @@ import 'amap-map.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'amap-navigation.dart';
 import 'news.dart';
+import 'httpService/login-http.dart';
+import 'dart:convert' as convert;
+import 'common/user.dart';
 
 void main() => runApp(MintApp());
 
@@ -16,7 +19,7 @@ class MintApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primaryColor: Colors.green,
+        primaryColor: Colors.redAccent,
       ),
       routes: <String, WidgetBuilder>{
         'wordDetail': (context) => wordDetail(),
@@ -30,6 +33,7 @@ final List<Permission> needPermissionList = [
   Permission.location,
   Permission.storage,
   Permission.phone,
+  Permission.camera,
 ];
 
 /*
@@ -40,11 +44,27 @@ class Tabs extends StatefulWidget {
   _TabsState createState() => _TabsState();
 }
 
+// 全局http请求token
 class _TabsState extends State<Tabs> {
+  var response = null;
   @override
   void initState() {
     super.initState();
     _checkPermissions();
+    login().then((res) => {
+          response = convert.jsonDecode(res.body),
+          if (res.statusCode == 200 && response['code'] == 200)
+            {
+              userGlobal.token = response['token'],
+              userGlobal.userInfo.forEach((key, value) {
+                userGlobal.userInfo[key] = response['data'][key];
+                print('$key:${response['data'][key]}');
+              }),
+              print('登录成功 http token is: ${userGlobal.token}.')
+            }
+          else
+            {print('Request failed with status: ${response.statusCode}.')}
+        });
   }
 
   @override
@@ -107,3 +127,65 @@ class _TabsState extends State<Tabs> {
     );
   }
 }
+
+///请求权限
+// void _requestPermission() async {
+//   debugPrint("进入闪屏页面");
+//   // 申请权限
+//   // PermissionStatus cameraStatus;
+//
+//   await [Permission.camera].request();
+//   // .then((value){
+//   //设置申请后的结果
+//   // cameraStatus=value[Permission.camera];
+//   // });
+//   //或者直接调用:
+//   debugPrint("请求权限,并获取权限");
+//   if (await Permission.camera.isDenied) {}
+//
+//   //校验权限
+//   if (await Permission.camera.isGranted) {
+//     debugPrint("校验权限:用户都同意了");
+//     //用户都同意了(用&&)
+//     ///权限都申请成功初始化闪屏
+//     _initSplash();
+//   } else if (await Permission.camera.isDenied) {
+//     debugPrint("校验权限:有任何一组权限被用户拒绝");
+//     //用户拒绝了(用||)
+//     ///有任何一组权限被用户拒绝
+//     //拼接提示权限文本
+//     StringBuffer sb = new StringBuffer();
+//     sb.write(await Permission.camera.isDenied ? "相机," : "");
+//     String tip = Utils.removePostfix(sb.toString(), ",");
+//
+//     Utils.showCustomDialog(
+//         context,
+//         ConfirmDialog(
+//           "您拒绝了应用的必要权限:\n[$tip],是否重新申请?",
+//           canBackDismiss: false,
+//           confirmCallback: () => _requestPermission(),
+//           cancelCallback: () => SystemNavigator.pop(),
+//         ));
+//   } else if (await Permission.camera.isPermanentlyDenied) {
+//     debugPrint("校验权限:有权限永久拒绝");
+//     //有权限永久拒绝(用||)
+//     ///有任何一组权限选了不再提示
+//     //拼接提示权限文本
+//     StringBuffer sb = new StringBuffer();
+//     sb.write(await Permission.camera.isPermanentlyDenied ? "相机," : "");
+//     String tip = Utils.removePostfix(sb.toString(), ",");
+//
+//     Utils.showCustomDialog(
+//         context,
+//         ConfirmDialog(
+//           "您禁用了应用的必要权限:\n[$tip],请到设置里允许?",
+//           canBackDismiss: false,
+//           confirmText: "去设置",
+//           confirmCallback: () async {
+//             await openAppSettings(); //打开设置页面
+//             SystemNavigator.pop();
+//           },
+//           cancelCallback: () => SystemNavigator.pop(),
+//         ));
+//   }
+// }
