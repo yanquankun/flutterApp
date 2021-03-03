@@ -11,6 +11,8 @@ import 'news.dart';
 import 'httpService/login-http.dart';
 import 'dart:convert' as convert;
 import 'common/user.dart';
+import 'articleDetail.dart';
+import 'wangyi-news.dart';
 
 void main() => runApp(MintApp());
 
@@ -23,6 +25,7 @@ class MintApp extends StatelessWidget {
       ),
       routes: <String, WidgetBuilder>{
         'wordDetail': (context) => wordDetail(),
+        'articleDetail': (context) => articleDetail(),
       },
       home: Tabs(),
     );
@@ -88,6 +91,7 @@ class _TabsState extends State<Tabs> {
   var _pageList = [
     RandomWords(),
     newsPage(),
+    wyNews(),
     amapNavigatePage('高德导航', '地图导航'),
     Amapofficial()
   ];
@@ -108,6 +112,10 @@ class _TabsState extends State<Tabs> {
               label: '资讯',
               tooltip: '订阅推荐',
               icon: Icon(Icons.new_releases_sharp, color: Colors.amber)),
+          BottomNavigationBarItem(
+              label: '新闻',
+              tooltip: '网易新闻',
+              icon: Icon(Icons.new_releases_outlined, color: Colors.amber)),
           BottomNavigationBarItem(
               label: '高德地图',
               tooltip: '个人高德地图使用测试',
