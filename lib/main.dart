@@ -2,31 +2,37 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import 'package:flutter/material.dart';
-import 'random-words.dart';
+import 'words/random-words.dart';
 import 'google-map.dart';
 import 'amap-map.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'amap-navigation.dart';
-import 'news.dart';
+import 'news/news.dart';
 import 'httpService/login-http.dart';
 import 'dart:convert' as convert;
 import 'common/user.dart';
-import 'articleDetail.dart';
-import 'wangyi-news.dart';
+import 'news/articleDetail.dart';
+import 'wy-news/wy-news.dart';
+import 'wy-news/wy-news-list.dart';
+import 'wy-news/wy-news-detail.dart';
 
 void main() => runApp(MintApp());
 
 class MintApp extends StatelessWidget {
+  final routes = <String, WidgetBuilder>{
+    'wordDetail': (context) => wordDetail(),
+    'articleDetail': (context) => articleDetail(),
+    'wyArticleDetail': (context) => wyNewsList(),
+    'wyNewsDetail': (contenxt) => wyNewsDetail(),
+  };
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
         primaryColor: Colors.redAccent,
       ),
-      routes: <String, WidgetBuilder>{
-        'wordDetail': (context) => wordDetail(),
-        'articleDetail': (context) => articleDetail(),
-      },
+      routes: routes,
       home: Tabs(),
     );
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'common/user.dart';
+import '../common/user.dart';
 import 'dart:convert' as convert;
-import 'httpService/login-http.dart';
+import '../httpService/login-http.dart';
 import 'dart:convert';
 
 class newsPage extends StatefulWidget {
@@ -50,7 +50,6 @@ class _newsPageState extends State<newsPage> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        print('滑动到了最底部');
         page++;
         this._getNews(page);
       }

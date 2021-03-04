@@ -23,11 +23,11 @@ final Map<String, Object> channelMap = {
     'sourceId': 'T1348648756099',
     'cn_name': '财经',
   },
-  'fangchan': {
-    'type': 'house',
-    'sourceId': 'T1348648756099',
-    'cn_name': '房产',
-  },
+  // 'fangchan': {
+  //   'type': 'house',
+  //   'sourceId': 'T1348648756099',
+  //   'cn_name': '房产',
+  // },
   'keji': {
     'type': 'list',
     'sourceId': 'T1348649580692',
@@ -54,6 +54,20 @@ Future<http.Response> login() async {
   // } else {
   //   print('Request failed with status: ${response.statusCode}.');
   // }
+}
+
+// 获取新闻详情
+Future<http.Response> getNewsDetail(String id) async {
+  Map<String, String> requestHeaders = {
+    'Content-type': 'application/json',
+    'token': userGlobal.token,
+    'login-user-id': userGlobal.userInfo['id'],
+    'sessionId': userGlobal.userInfo['sessionId'],
+  };
+
+  var url = 'http://117.160.193.18:8071/api/web/article/$id';
+  var client = http.Client();
+  return await client.get(url, headers: requestHeaders);
 }
 
 // 获取用户订阅资讯
@@ -93,8 +107,8 @@ Future<http.Response> getWangYiNews(
   return await client.get(url, headers: requestHeaders);
 }
 
-// 获取新闻详情
-Future<http.Response> getNewsDetail(String docId) async {
+// 获取网易新闻详情
+Future<http.Response> getWYNewsDetail(String docId) async {
   Map<String, String> requestHeaders = {
     'Content-type': 'application/json',
   };

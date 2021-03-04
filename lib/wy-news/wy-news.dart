@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'httpService/login-http.dart';
+import '../httpService/login-http.dart';
+import 'wy-news-list.dart';
 
 class wyNews extends StatefulWidget {
   @override
@@ -7,6 +8,7 @@ class wyNews extends StatefulWidget {
 }
 
 class _wyNewsState extends State<wyNews> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +47,14 @@ class _wyNewsState extends State<wyNews> {
             borderRadius: BorderRadiusDirectional.all(Radius.circular(30))),
         child: InkWell(
           onTap: () => {
-            print(channel),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => wyNewsList(ch: channel),
+              ),
+            ),
+            // Navigator.pushNamed(context, 'wyArticleDetail',
+            //     arguments: {'ch': channel})
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
