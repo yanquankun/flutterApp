@@ -4,6 +4,7 @@ import '../common/user.dart';
 import 'dart:convert' as convert;
 import '../httpService/login-http.dart';
 import 'dart:convert';
+import 'package:mint_app/common/comfun.dart';
 
 class newsPage extends StatefulWidget {
   @override
@@ -82,30 +83,7 @@ class _newsPageState extends State<newsPage> {
                   controller: _scrollController,
                 ),
               )
-            : _getMoreWidget());
-  }
-
-  //加载中的圈圈
-  Widget _getMoreWidget() {
-    _getNews(page);
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              '加载中...',
-              style: TextStyle(fontSize: 16.0),
-            ),
-            CircularProgressIndicator(
-              strokeWidth: 1.0,
-            )
-          ],
-        ),
-      ),
-    );
+            : comfun().getMoreWidgetState(_getNews, [page]));
   }
 
   Widget _news(article) {

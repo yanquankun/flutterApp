@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../httpService/login-http.dart';
 import 'dart:convert';
 import 'dart:convert' as convert;
+import 'package:mint_app/common/comfun.dart';
 
 class articleDetail extends StatefulWidget {
   @override
@@ -33,29 +34,6 @@ class _articleDetailState extends State<articleDetail> {
         });
   }
 
-  //加载中的圈圈
-  Widget _getMoreWidget() {
-    _getNewsDetail(articleId);
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              '加载中...',
-              style: TextStyle(fontSize: 16.0),
-            ),
-            CircularProgressIndicator(
-              strokeWidth: 1.0,
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     dynamic obj = ModalRoute.of(context).settings.arguments;
@@ -74,7 +52,9 @@ class _articleDetailState extends State<articleDetail> {
           ),
         ),
       ),
-      body: artDetail != null ? _content(artDetail) : _getMoreWidget(),
+      body: artDetail != null
+          ? _content(artDetail)
+          : comfun().getMoreWidgetState(_getNewsDetail, [articleId]),
     );
   }
 

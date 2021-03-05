@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../httpService/login-http.dart';
 import 'dart:convert';
 import 'dart:convert' as convert;
+import 'package:mint_app/common/comfun.dart';
 
 class wyNewsDetail extends StatefulWidget {
   @override
@@ -11,29 +12,6 @@ class wyNewsDetail extends StatefulWidget {
 class _wyNewsDetailState extends State<wyNewsDetail> {
   var artDetail = null;
   var docId = null;
-
-  //加载中的圈圈
-  Widget _getMoreWidget() {
-    _getWyNewsDetail(docId);
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              '加载中...',
-              style: TextStyle(fontSize: 16.0),
-            ),
-            CircularProgressIndicator(
-              strokeWidth: 1.0,
-            )
-          ],
-        ),
-      ),
-    );
-  }
 
   _getWyNewsDetail(String docid) {
     var data = null;
@@ -49,7 +27,6 @@ class _wyNewsDetailState extends State<wyNewsDetail> {
                         .replaceAll(
                             RegExp(r'<!\--IMG#[1-9][0-9]{0,}-->'), 'picture')
                         .replaceAll(RegExp(r'<[^>]+>'), ''),
-                    print(artDetail),
                     getWidgetSpan(artDetail['body'], artDetail['img']),
                   })
             }
@@ -58,6 +35,7 @@ class _wyNewsDetailState extends State<wyNewsDetail> {
         });
   }
 
+  // 新闻解析body文本，使用WidgetSpan将图片和文本结合
   List<InlineSpan> ws = [];
   getWidgetSpan(String str, List imgs) {
     var idx = 0;
@@ -70,10 +48,12 @@ class _wyNewsDetailState extends State<wyNewsDetail> {
         )),
         WidgetSpan(
             child: SizedBox(
-          child: Image.network(
-            imgs[idx]['src'],
-            fit: BoxFit.cover,
-          ),
+          child: imgs.length != 0
+              ? Image.network(
+                  imgs[idx]['src'] ?? '',
+                  fit: BoxFit.cover,
+                )
+              : Text(''),
         )),
       ]);
       idx++;
@@ -88,17 +68,19 @@ class _wyNewsDetailState extends State<wyNewsDetail> {
       print('docid is:' + docId);
     }
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          '网易新闻',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w900,
+        appBar: AppBar(
+          title: Text(
+            '网易新闻',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w900,
+            ),
           ),
         ),
-      ),
-      body: artDetail != null ? _content(artDetail) : _getMoreWidget(),
-    );
+        body: artDetail != null
+            ? _content(artDetail)
+            : new comfun()
+                .getMoreWidgetState(_getWyNewsDetail, [obj['docid']]));
   }
 
   Widget _content(artDetail) {
@@ -144,16 +126,16 @@ class _wyNewsDetailState extends State<wyNewsDetail> {
               // Column(
               //   children: getImgs(artDetail['img']),
               // ),
-              // Container(
-              //   padding: EdgeInsets.only(top: 10),
-              //   child: Text(
-              //     artDetail['headText'] ?? '',
-              //     style: TextStyle(
-              //         color: Colors.black,
-              //         fontSize: 15.0,
-              //         fontWeight: FontWeight.w600),
-              //   ),
-              // ),
+              Container(
+                padding: EdgeInsets.only(top: 10),
+                child: Text(
+                  artDetail['headText'] ?? '',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
               // Container(
               //   padding: EdgeInsets.only(top: 10),
               //   child: Text(
