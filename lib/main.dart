@@ -2,17 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import 'package:flutter/material.dart';
+import 'package:mint_app/common/comfun.dart';
 import 'words/random-words.dart';
-import 'google-map.dart';
-import 'amap-map.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'amap-navigation.dart';
-import 'news/news.dart';
 import 'httpService/login-http.dart';
 import 'dart:convert' as convert;
 import 'common/user.dart';
 import 'news/articleDetail.dart';
-import 'wy-news/wy-news.dart';
 import 'wy-news/wy-news-list.dart';
 import 'wy-news/wy-news-detail.dart';
 
@@ -93,19 +89,10 @@ class _TabsState extends State<Tabs> {
   //选中的条目
   var _currentIndex = 0;
 
-  //tab对应的body页面
-  var _pageList = [
-    RandomWords(),
-    newsPage(),
-    wyNews(),
-    amapNavigatePage('高德导航', '地图导航'),
-    Amapofficial()
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: this._pageList[this._currentIndex],
+      body: comfun().getPageList()[this._currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         fixedColor: Colors.blue,
         currentIndex: this._currentIndex,

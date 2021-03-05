@@ -171,6 +171,7 @@ class _wyNewsListState extends State<wyNewsList> {
                                 .spaceBetween, //子组件在主轴的排列方式为两端对齐
                             children: <Widget>[
                               Container(
+                                width: 110,
                                 child: Text(
                                   article['source'] ?? '无来源',
                                   maxLines: 1,

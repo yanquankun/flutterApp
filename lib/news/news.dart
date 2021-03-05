@@ -14,6 +14,8 @@ class newsPage extends StatefulWidget {
 class _newsPageState extends State<newsPage> {
   List articleLists = [];
   int page = 1;
+  bool hasData = true;
+
   ScrollController _scrollController = new ScrollController();
 
   void _getNews(page) {
@@ -24,6 +26,7 @@ class _newsPageState extends State<newsPage> {
           if (res.statusCode == 200 && data['code'] == 200)
             {
               setState(() {
+                hasData = true;
                 data['data']['articleLists'].forEach((element) {
                   element['publishTime'] = DateTime.fromMillisecondsSinceEpoch(
                           element['publishTime'])
@@ -31,13 +34,37 @@ class _newsPageState extends State<newsPage> {
                       .substring(0, 10);
                   articleLists.add(element);
                 });
-                print(articleLists);
-                print(articleLists.length);
               }),
             }
+          else if (res.statusCode == 200 && data['code'] == 401)
+            {
+              print(data['message']),
+              setState(() => {
+                    hasData = false,
+                    Future.delayed(Duration(milliseconds: 2000), () {
+                      comfun().showCupertinoAlertDialog(
+                          context: context,
+                          title: '提示',
+                          content: data['code'] == 401
+                              ? data['message'] + '，请重新登录'
+                              : data['message'],
+                          sureText: '确定');
+                    })
+                  })
+            }
           else
-            {print('Request failed with status: ${res.statusCode}.')}
+            {
+              print('Request failed with status: ${res.statusCode}.'),
+              hasData = false,
+            }
         });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _scrollController.removeListener(() {});
   }
 
   @override
@@ -47,7 +74,6 @@ class _newsPageState extends State<newsPage> {
     userGlobal.userInfo.forEach((key, value) {
       print('$key:$value');
     });
-    // this._getNews(page);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -72,7 +98,7 @@ class _newsPageState extends State<newsPage> {
         appBar: AppBar(
           title: Text('新闻资讯'),
         ),
-        body: !articleLists.isEmpty
+        body: !articleLists.isEmpty && hasData
             ? RefreshIndicator(
                 onRefresh: _onRefresh,
                 child: ListView.builder(
@@ -83,7 +109,17 @@ class _newsPageState extends State<newsPage> {
                   controller: _scrollController,
                 ),
               )
-            : comfun().getMoreWidgetState(_getNews, [page]));
+            : (hasData
+                ? comfun().getMoreWidgetState(_getNews, [page])
+                : Center(
+                    child: Text(
+                      '暂无数据',
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900),
+                    ),
+                  )));
   }
 
   Widget _news(article) {
