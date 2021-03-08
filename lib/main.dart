@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import 'package:flutter/material.dart';
 import 'package:mint_app/common/comfun.dart';
+import 'package:package_info/package_info.dart';
 import 'words/random-words.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'httpService/login-http.dart';
@@ -146,7 +147,7 @@ class _TabsState extends State<Tabs> {
                 context,
                 '个人介绍：',
                 Container(
-                  height: 140,
+                  height: 160,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

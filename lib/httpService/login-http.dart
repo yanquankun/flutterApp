@@ -45,7 +45,7 @@ Future<http.Response> login() async {
   };
 
   var client = http.Client();
-  return await client.post('http://117.160.193.18:8071/api/login',
+  return await client.post('http://内容接口环境/api/login',
       headers: requestHeaders, body: params);
   // if (response.statusCode == 200) {
   //   var jsonResponse = convert.jsonDecode(response.body);
@@ -65,7 +65,7 @@ Future<http.Response> getNewsDetail(String id) async {
     'sessionId': userGlobal.userInfo['sessionId'],
   };
 
-  var url = 'http://117.160.193.18:8071/api/web/article/$id';
+  var url = 'http://内容接口环境/api/web/article/$id';
   var client = http.Client();
   return await client.get(url, headers: requestHeaders);
 }
@@ -88,7 +88,7 @@ Future<http.Response> getNews(int page) async {
   };
 
   var url =
-      'http://117.160.193.18:8071/api/web/article/query?keyword=&page=$page&size=10&classificationNodeId=225&ownerId=${userGlobal.userInfo['orgId']}';
+      'http://内容接口环境/api/web/article/query?keyword=&page=$page&size=10&classificationNodeId=225&ownerId=${userGlobal.userInfo['orgId']}';
 
   var client = http.Client();
   return await client.get(url, headers: requestHeaders);

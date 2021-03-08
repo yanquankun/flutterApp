@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-
+import 'package:permission_handler/permission_handler.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:mint_app/amap-basic/base_page.dart';
 import 'package:mint_app/amap-basic/const_config.dart';
@@ -84,13 +84,14 @@ class _MapUiBodyState extends State<_MapUiBody> {
   double _longitude = 0;
   double _latitude = 0;
 
+  String str = '位置信息';
+
   ///自定义定位小蓝点
   MyLocationStyleOptions _myLocationStyleOptions = MyLocationStyleOptions(true);
+
   @override
   void initState() {
     super.initState();
-    // 开始定位
-    _startLocation();
 
     ///注册定位结果监听
     _locationListener = _locationPlugin
@@ -98,38 +99,32 @@ class _MapUiBodyState extends State<_MapUiBody> {
         .listen((Map<String, Object> result) {
       setState(() {
         _locationResult = result;
-        if (_locationResult != null) {
-          print('定位结果是：$_locationResult');
-          _locationResult.forEach((key, value) {
-            print('_locationResult值：$key:$value');
-          });
-          str = '' + _locationResult['country'] + _locationResult['country'] ==
-                  null
-              ? '|'
-              : '' +
-                          _locationResult['province'] +
-                          _locationResult['province'] ==
-                      null
-                  ? '|'
-                  : '' + _locationResult['city'] + _locationResult['city'] ==
-                          null
-                      ? '|'
-                      : '' +
-                                  _locationResult['street'] +
-                                  _locationResult['street'] ==
-                              null
-                          ? '|'
-                          : '';
-          _controller.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
-              // target: LatLng(39.993306, 116.473004),
-              target: LatLng(
-                  _locationResult['latitude'], _locationResult['longitude']),
-              zoom: 18,
-              tilt: 30,
-              bearing: 30)));
-        }
+        print('定位结果是：$_locationResult');
+        str = '' + _locationResult['country'] + _locationResult['country'] ==
+                null
+            ? '|'
+            : '' + _locationResult['province'] + _locationResult['province'] ==
+                    null
+                ? '|'
+                : '' + _locationResult['city'] + _locationResult['city'] == null
+                    ? '|'
+                    : '' +
+                                _locationResult['street'] +
+                                _locationResult['street'] ==
+                            null
+                        ? '|'
+                        : '';
+        _controller.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
+            // target: LatLng(39.993306, 116.473004),
+            target: LatLng(
+                _locationResult['latitude'], _locationResult['longitude']),
+            zoom: 18,
+            tilt: 30,
+            bearing: 30)));
       });
     });
+
+    _startLocation();
   }
 
   @override
@@ -197,24 +192,15 @@ class _MapUiBodyState extends State<_MapUiBody> {
   }
 
   ///开始定位
-  var str = '位置信息';
   void _startLocation() {
     if (null != _locationPlugin) {
       ///开始定位之前设置定位参数
-      // _setLocationOption();
+      _setLocationOption();
       _locationPlugin.startLocation();
-      if (_locationResult != null) {
-        _locationResult.forEach((key, value) {
-          print('_locationResult值：$key:$value');
-        });
-        _controller.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
-            // target: LatLng(39.993306, 116.473004),
-            target: LatLng(
-                _locationResult['latitude'], _locationResult['longitude']),
-            zoom: 18,
-            tilt: 30,
-            bearing: 30)));
-      }
+      print('_locationListener.isPaused is ${_locationListener.isPaused}');
+      // if (_locationListener != null && _locationListener.isPaused) {
+      //   _locationListener.resume();
+      // }
     }
   }
 
@@ -222,6 +208,11 @@ class _MapUiBodyState extends State<_MapUiBody> {
   void _stopLocation() {
     if (null != _locationPlugin) {
       _locationPlugin.stopLocation();
+      print('_locationListener.isPaused is ${_locationListener.isPaused}');
+      /// steamListener 你调用了多少次暂停, 要恢复, 也得调用对应次数的恢复才行
+      // if (_locationListener != null && !_locationListener.isPaused) {
+      //   _locationListener.pause();
+      // }
     }
   }
 
@@ -511,7 +502,7 @@ class _MapUiBodyState extends State<_MapUiBody> {
           _mapTypeOptions(),
           // _myLocationStyleContainer(),
           _locationWidget(),
-          Text(str)
+          // Text(str)
           // _uiOptionsWidget(),
           // _gesturesOptiosWeidget(),
           // FlatButton(
@@ -596,7 +587,7 @@ class _MapUiBodyState extends State<_MapUiBody> {
     if (null == location) {
       return;
     }
-    print('_onLocationChanged ${location.toJson()}');
+    // print('_onLocationChanged ${location.toJson()}');
   }
 
   void _onCameraMove(CameraPosition cameraPosition) {
