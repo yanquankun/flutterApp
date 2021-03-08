@@ -70,23 +70,43 @@ class comfun {
     ];
   }
 
-  showAlert([String message = '暂无数据']) async {
-    await AlertDialog(
-      title: Text('提示'),
-      content: Text(message),
-      backgroundColor: Colors.redAccent,
-      elevation: 24,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-      // actions: <Widget>[
-      //   FlatButton(
-      //     child: Text('取消'),
-      //     onPressed: () {},
-      //   ),
-      //   FlatButton(
-      //     child: Text('确认'),
-      //     onPressed: () {},
-      //   ),
-      // ],
+  showAlert(context, String title, Widget msgWidget,
+      {String sureText, notText}) async {
+    final css = TextStyle(
+        fontSize: 18, color: Colors.black, fontWeight: FontWeight.w700);
+    await showDialog(
+      context: context,
+      barrierDismissible: false, // 点击外部不关闭
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title, style: css),
+          content: msgWidget,
+          backgroundColor: Colors.lightBlueAccent,
+          elevation: 24,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+          actions: <Widget>[
+            // ignore: deprecated_member_use
+            notText != null
+                ? FlatButton(
+                    child: Text(notText),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                  )
+                : null,
+            // ignore: deprecated_member_use
+            sureText != null
+                ? FlatButton(
+                    child: Text(sureText, style: css),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                  )
+                : null,
+          ],
+        );
+      },
     );
   }
 

@@ -11,6 +11,8 @@ import 'common/user.dart';
 import 'news/articleDetail.dart';
 import 'wy-news/wy-news-list.dart';
 import 'wy-news/wy-news-detail.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(MintApp());
 
@@ -93,6 +95,7 @@ class _TabsState extends State<Tabs> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: comfun().getPageList()[this._currentIndex],
+      floatingActionButton: _floatBtn(context),
       bottomNavigationBar: BottomNavigationBar(
         fixedColor: Colors.blue,
         currentIndex: this._currentIndex,
@@ -124,6 +127,81 @@ class _TabsState extends State<Tabs> {
             this._currentIndex = value.toInt();
           });
         },
+      ),
+    );
+  }
+
+  // 悬浮按钮
+  Widget _floatBtn(BuildContext context) {
+    return InkWell(
+      onTap: () => {
+        Future.delayed(Duration(milliseconds: 200), () {
+          final css = TextStyle(
+              fontSize: 18,
+              decoration: TextDecoration.underline,
+              color: Colors.black,
+              fontWeight: FontWeight.w700);
+          setState(() {
+            comfun().showAlert(
+                context,
+                '个人介绍：',
+                Container(
+                  height: 140,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('闫全堃（Mint）',
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700)),
+                      SizedBox(height: 10),
+                      InkWell(
+                          child: Text(
+                            '个人介绍（点击后跳转）',
+                            style: css,
+                          ),
+                          onTap: () =>
+                              launch('http://39.97.119.181/myself/index.html')),
+                      SizedBox(height: 10),
+                      InkWell(
+                          child: Text('个人git（点击后跳转）', style: css),
+                          onTap: () => launch('https://github.com/yanquankun')),
+                      SizedBox(height: 10),
+                      InkWell(
+                          child: Text('个人AngularUI库（点击后跳转）', style: css),
+                          onTap: () =>
+                              launch('http://39.97.119.181/ng-mui/#/start')),
+                    ],
+                  ),
+                ),
+                sureText: '看完了呦~');
+          });
+        }),
+      },
+      child: Opacity(
+        opacity: 0.6,
+        child:Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: Colors.redAccent,
+
+            borderRadius: BorderRadiusDirectional.all(Radius.circular(30)),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                '关于我',
+                style: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
