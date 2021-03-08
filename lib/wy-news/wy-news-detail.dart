@@ -12,14 +12,17 @@ class wyNewsDetail extends StatefulWidget {
 class _wyNewsDetailState extends State<wyNewsDetail> {
   var artDetail = null;
   var docId = null;
+  var hasData = true;
 
   _getWyNewsDetail(String docid) {
     var data = null;
     getWYNewsDetail(docid).then((res) => {
-          data = convert.jsonDecode(new Utf8Decoder().convert(res.bodyBytes)),
-          if (res.statusCode == 200)
+          if (res.statusCode == 200 && !res.bodyBytes.isEmpty)
             {
+              data =
+                  convert.jsonDecode(new Utf8Decoder().convert(res.bodyBytes)),
               setState(() => {
+                    hasData = true,
                     artDetail = data[docid],
                     artDetail['body'] = artDetail['body']
                         .toString()
@@ -31,7 +34,13 @@ class _wyNewsDetailState extends State<wyNewsDetail> {
                   })
             }
           else
-            {print('Request failed with status: ${res.statusCode}.')}
+            {
+              print('Request failed with status: ${res.statusCode}.'),
+              setState(() => {
+                    hasData = false,
+                    data = [],
+                  })
+            }
         });
   }
 
@@ -68,19 +77,30 @@ class _wyNewsDetailState extends State<wyNewsDetail> {
       print('docid is:' + docId);
     }
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            '网易新闻',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w900,
-            ),
+      appBar: AppBar(
+        title: Text(
+          '网易新闻',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w900,
           ),
         ),
-        body: artDetail != null
-            ? _content(artDetail)
-            : new comfun()
-                .getMoreWidgetState(_getWyNewsDetail, [obj['docid']]));
+      ),
+      body: artDetail != null && hasData
+          ? _content(artDetail)
+          : (hasData
+              ? new comfun()
+                  .getMoreWidgetState(_getWyNewsDetail, [obj['docid']])
+              : Center(
+                  child: Text(
+                    '暂无数据，请观看其他新闻',
+                    style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900),
+                  ),
+                )),
+    );
   }
 
   Widget _content(artDetail) {
