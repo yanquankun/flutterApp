@@ -113,8 +113,8 @@ class _TabsState extends State<Tabs> {
               tooltip: '网易新闻',
               icon: Icon(Icons.new_releases_outlined, color: Colors.amber)),
           BottomNavigationBarItem(
-              label: '高德地图',
-              tooltip: '个人高德地图使用测试',
+              label: '实时地图',
+              tooltip: '高德地图',
               icon: Icon(Icons.maps_ugc_rounded, color: Colors.amber)),
           // BottomNavigationBarItem(label: '谷歌地图', icon: Icon(Icons.map)),
           BottomNavigationBarItem(

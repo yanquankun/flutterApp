@@ -42,13 +42,13 @@ class _MapUiBodyState extends State<_MapUiBody> {
   );
 
   ///地图类型
-  MapType _mapType = MapType.normal;
+  MapType _mapType = MapType.bus;
 
   ///显示路况开关
   bool _trafficEnabled = true;
 
   /// 地图poi是否允许点击
-  bool _touchPoiEnabled = false;
+  bool _touchPoiEnabled = true;
 
   ///是否显示3D建筑物
   bool _buildingsEnabled = true;
@@ -74,6 +74,9 @@ class _MapUiBodyState extends State<_MapUiBody> {
   ///是否支持倾斜手势
   bool _tiltGesturesEnabled = true;
 
+  ///是否开启实时定位
+  bool _locationEnabled = true;
+
   AMapController _controller;
 
   CustomStyleOptions _customStyleOptions = CustomStyleOptions(false);
@@ -82,11 +85,12 @@ class _MapUiBodyState extends State<_MapUiBody> {
   double _latitude = 0;
 
   ///自定义定位小蓝点
-  MyLocationStyleOptions _myLocationStyleOptions =
-      MyLocationStyleOptions(false);
+  MyLocationStyleOptions _myLocationStyleOptions = MyLocationStyleOptions(true);
   @override
   void initState() {
     super.initState();
+    // 开始定位
+    _startLocation();
 
     ///注册定位结果监听
     _locationListener = _locationPlugin
@@ -94,7 +98,36 @@ class _MapUiBodyState extends State<_MapUiBody> {
         .listen((Map<String, Object> result) {
       setState(() {
         _locationResult = result;
-        print('定位结果是：$_locationResult');
+        if (_locationResult != null) {
+          print('定位结果是：$_locationResult');
+          _locationResult.forEach((key, value) {
+            print('_locationResult值：$key:$value');
+          });
+          str = '' + _locationResult['country'] + _locationResult['country'] ==
+                  null
+              ? '|'
+              : '' +
+                          _locationResult['province'] +
+                          _locationResult['province'] ==
+                      null
+                  ? '|'
+                  : '' + _locationResult['city'] + _locationResult['city'] ==
+                          null
+                      ? '|'
+                      : '' +
+                                  _locationResult['street'] +
+                                  _locationResult['street'] ==
+                              null
+                          ? '|'
+                          : '';
+          _controller.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
+              // target: LatLng(39.993306, 116.473004),
+              target: LatLng(
+                  _locationResult['latitude'], _locationResult['longitude']),
+              zoom: 18,
+              tilt: 30,
+              bearing: 30)));
+        }
       });
     });
   }
@@ -164,20 +197,16 @@ class _MapUiBodyState extends State<_MapUiBody> {
   }
 
   ///开始定位
-  var str = '测试位置信息';
+  var str = '位置信息';
   void _startLocation() {
     if (null != _locationPlugin) {
       ///开始定位之前设置定位参数
-      _setLocationOption();
+      // _setLocationOption();
       _locationPlugin.startLocation();
       if (_locationResult != null) {
         _locationResult.forEach((key, value) {
           print('_locationResult值：$key:$value');
         });
-        setState(() {
-          str = _locationResult.toString();
-        });
-        _stopLocation();
         _controller.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
             // target: LatLng(39.993306, 116.473004),
             target: LatLng(
@@ -254,11 +283,28 @@ class _MapUiBodyState extends State<_MapUiBody> {
     }
 
     final List<Widget> _mapTypeList = [
-      _mapTypeRadio('普通地图', MapType.normal),
+      // _mapTypeRadio('普通地图', MapType.normal),
       _mapTypeRadio('卫星地图', MapType.satellite),
       _mapTypeRadio('导航地图', MapType.navi),
       _mapTypeRadio('公交地图', MapType.bus),
       _mapTypeRadio('黑夜模式', MapType.night),
+    ];
+
+    // 是否开启实时定位
+    final List<Widget> _locationOptions = [
+      AMapSwitchButton(
+        label: Text('实时定位'),
+        defaultValue: _locationEnabled,
+        onSwitchChanged: (value) => {
+          setState(() {
+            _locationEnabled = value;
+            if (!value)
+              _stopLocation();
+            else
+              _startLocation();
+          })
+        },
+      ),
     ];
 
     //ui控制
@@ -317,15 +363,15 @@ class _MapUiBodyState extends State<_MapUiBody> {
           })
         },
       ),
-      AMapSwitchButton(
-        label: Text('自定义地图'),
-        defaultValue: _customStyleOptions.enabled,
-        onSwitchChanged: (value) => {
-          setState(() {
-            _customStyleOptions.enabled = value;
-          })
-        },
-      ),
+      // AMapSwitchButton(
+      //   label: Text('自定义地图'),
+      //   defaultValue: _customStyleOptions.enabled,
+      //   onSwitchChanged: (value) => {
+      //     setState(() {
+      //       _customStyleOptions.enabled = value;
+      //     })
+      //   },
+      // ),
     ];
 
     //手势开关
@@ -425,6 +471,23 @@ class _MapUiBodyState extends State<_MapUiBody> {
       );
     }
 
+    Widget _locationWidget() {
+      return Container(
+        padding: EdgeInsets.all(5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('实时定位', style: TextStyle(fontWeight: FontWeight.w600)),
+            Container(
+              padding: EdgeInsets.only(left: 10),
+              child: createGridView(_locationOptions),
+            ),
+          ],
+        ),
+      );
+    }
+
     Widget _gesturesOptiosWeidget() {
       return Container(
         padding: EdgeInsets.all(5),
@@ -446,13 +509,15 @@ class _MapUiBodyState extends State<_MapUiBody> {
       return Column(
         children: [
           _mapTypeOptions(),
-          _myLocationStyleContainer(),
-          _uiOptionsWidget(),
-          _gesturesOptiosWeidget(),
-          FlatButton(
-            child: const Text('移动到当前位置'),
-            onPressed: _moveCameraToShoukai,
-          ),
+          // _myLocationStyleContainer(),
+          _locationWidget(),
+          Text(str)
+          // _uiOptionsWidget(),
+          // _gesturesOptiosWeidget(),
+          // FlatButton(
+          //   child: const Text('移动到当前位置'),
+          //   onPressed: _moveCameraToShoukai,
+          // ),
         ],
       );
     }
@@ -477,7 +542,6 @@ class _MapUiBodyState extends State<_MapUiBody> {
                 ),
               ),
             ),
-            Text(str),
           ],
         ),
       );
@@ -518,12 +582,12 @@ class _MapUiBodyState extends State<_MapUiBody> {
         //一行的Widget数量
         crossAxisCount: 2,
         //宽高比
-        childAspectRatio: 4,
+        childAspectRatio: 8,
         children: widgets,
         shrinkWrap: true);
   }
 
-  //移动地图中心点到首开广场
+  //移动到当前位置
   void _moveCameraToShoukai() {
     _startLocation();
   }
