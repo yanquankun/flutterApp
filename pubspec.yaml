@@ -49,6 +49,9 @@ dependencies:
 
   provider: ^4.0.0
 
+  # 地理定位
+  amap_flutter_location: ^1.0.0
+
 dev_dependencies:
   # flutter 启动图标库
   flutter_launcher_icons: "^0.8.0"

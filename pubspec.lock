@@ -8,6 +8,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.2"
+  amap_flutter_location:
+    dependency: "direct main"
+    description:
+      name: amap_flutter_location
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.1"
   amap_flutter_map:
     dependency: "direct main"
     description:
