@@ -63,10 +63,8 @@ class comfun {
   getPageList() {
     return [
       RandomWords(),
-      newsPage(),
       wyNews(),
       amapNavigatePage('高德导航', '地图导航'),
-      Amapofficial()
     ];
   }
 

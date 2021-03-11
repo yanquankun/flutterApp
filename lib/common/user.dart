@@ -12,6 +12,13 @@ class userGlobal {
     'userName': '',
     'sessionId': '',
   };
+  static Map<String, String> realUserInfo = {
+    'guid': '',
+    'id': '',
+    'email': '',
+    'phone': '',
+    'birthday': '',
+  };
 }
 
 class userModel extends ChangeNotifier {
