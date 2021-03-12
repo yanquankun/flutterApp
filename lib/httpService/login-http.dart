@@ -117,3 +117,28 @@ Future<http.Response> getWYNewsDetail(String docId) async {
   var url = 'http://c.m.163.com/nc/article/$docId/full.html';
   return await client.get(url, headers: requestHeaders);
 }
+
+// 真实登录
+Future<http.Response> realLogin(String username, String password) async {
+  Map<String, String> requestHeaders = {
+    'Content-type': 'application/json',
+  };
+
+  var client = http.Client();
+  var url =
+      'http://39.97.119.181:9400/user/loginUser?username=${username}&password=${password}';
+  return await client.get(url, headers: requestHeaders);
+}
+
+// 注册
+Future<http.Response> userRegist(String username, String password) async {
+  Map<String, String> requestHeaders = {
+    'Content-type': 'application/json',
+  };
+
+  var client = http.Client();
+  var url =
+      'http://39.97.119.181:9400/user/regis?username=${username}&password=${password}';
+  return await client.get(url, headers: requestHeaders);
+}
+

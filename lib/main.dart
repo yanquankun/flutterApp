@@ -7,6 +7,7 @@ import 'news/articleDetail.dart';
 import 'wy-news/wy-news-list.dart';
 import 'wy-news/wy-news-detail.dart';
 import 'login/login.dart';
+import 'login/regist.dart';
 import 'home.dart';
 
 void main() => runApp(MintApp());
@@ -19,6 +20,7 @@ class MintApp extends StatelessWidget {
     'articleDetail': (context) => articleDetail(),
     'wyArticleDetail': (context) => wyNewsList(),
     'wyNewsDetail': (contenxt) => wyNewsDetail(),
+    'regist': (contenxt) => regist(),
   };
 
   @override

@@ -209,6 +209,7 @@ class _MapUiBodyState extends State<_MapUiBody> {
     if (null != _locationPlugin) {
       _locationPlugin.stopLocation();
       print('_locationListener.isPaused is ${_locationListener.isPaused}');
+
       /// steamListener 你调用了多少次暂停, 要恢复, 也得调用对应次数的恢复才行
       // if (_locationListener != null && !_locationListener.isPaused) {
       //   _locationListener.pause();
@@ -541,6 +542,15 @@ class _MapUiBodyState extends State<_MapUiBody> {
     return Scaffold(
       appBar: AppBar(
         title: Text('高德导航'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.logout),
+            tooltip: '退出',
+            onPressed: () {
+              Navigator.popAndPushNamed(context, 'login');
+            },
+          ),
+        ],
       ),
       body: _mapContent(),
     );

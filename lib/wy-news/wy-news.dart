@@ -8,7 +8,6 @@ class wyNews extends StatefulWidget {
 }
 
 class _wyNewsState extends State<wyNews> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,6 +19,15 @@ class _wyNewsState extends State<wyNews> {
             fontWeight: FontWeight.w900,
           ),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.logout),
+            tooltip: '退出',
+            onPressed: () {
+              Navigator.popAndPushNamed(context, 'login');
+            },
+          ),
+        ],
       ),
       body: _buildWYNews(),
     );

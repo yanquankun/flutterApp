@@ -72,7 +72,14 @@ class _RandomWordsState extends State<RandomWords> {
           ),
         ),
         actions: <Widget>[
-          IconButton(icon: const Icon(Icons.list), onPressed: _pushed)
+          IconButton(icon: const Icon(Icons.list), onPressed: _pushed),
+          IconButton(
+            icon: Icon(Icons.logout),
+            tooltip: '退出',
+            onPressed: () {
+              Navigator.popAndPushNamed(context, 'login');
+            },
+          ),
         ],
       ),
       body: _buildSuggestions(),
