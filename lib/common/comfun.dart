@@ -13,7 +13,7 @@ class comfun {
     Function cb,
     List args,
   ) {
-    Function.apply(cb, args);
+    if (cb != null) Function.apply(cb, args);
     return Center(
       child: Padding(
         padding: EdgeInsets.all(10.0),
@@ -77,7 +77,7 @@ class comfun {
   }
 
   showAlert(context, String title, Widget msgWidget,
-      {String sureText, notText}) async {
+      {String sureText, notText, Function notFun}) async {
     final css = TextStyle(
         fontSize: 18, color: Colors.black, fontWeight: FontWeight.w700);
     await showDialog(
@@ -95,8 +95,11 @@ class comfun {
             // ignore: deprecated_member_use
             notText != null
                 ? FlatButton(
-                    child: Text(notText),
+                    child: Text(notText, style: css),
                     onPressed: () {
+                      if (notFun != null) {
+                        Function.apply(notFun, null);
+                      }
                       Navigator.of(context).pop(false);
                     },
                   )
@@ -116,23 +119,105 @@ class comfun {
     );
   }
 
-  showCupertinoAlertDialog(
-      {context, String title, String content, String sureText}) {
+  showCupertinoAlertDialog({
+    context,
+    String title,
+    String content,
+    String sureText,
+    String notText,
+    Function sureFun,
+  }) {
     showCupertinoDialog(
         context: context,
         builder: (cxt) {
           return CupertinoAlertDialog(
-            title: Text(title),
-            content: Text(content),
+            title: Text(title ?? '默认标题'),
+            content: Text(content ?? '默认内容'),
             actions: [
               CupertinoDialogAction(
-                child: Text(sureText),
+                child: Text(notText ?? '取消'),
                 onPressed: () {
+                  Navigator.pop(cxt, 2);
+                },
+              ),
+              CupertinoDialogAction(
+                child: Text(sureText ?? '确定'),
+                onPressed: () {
+                  if (sureFun != null) {
+                    Function.apply(sureFun, null);
+                  }
                   Navigator.pop(cxt, 2);
                 },
               )
             ],
           );
         });
+  }
+
+  final List<String> fileTypes = [
+    'mp3',
+    'mp4',
+    'm2v',
+    'mkv',
+    'rmvb',
+    'wmv',
+    'avi',
+    'flv',
+    'mov',
+    'm4v',
+    'png',
+    'jpg',
+    'jpeg',
+    'bmp',
+    'gif',
+    'webp',
+    'psd',
+    'svg',
+    'tiff',
+    'txt',
+    'xls',
+    'xlsx',
+    'doc',
+    'docx',
+    'pdf',
+    'ppt',
+    'pptx'
+  ];
+
+  String returnMediaFileType(String filename) {
+    final fileNameList = filename.split('.');
+    final type = fileNameList[fileNameList.length - 1];
+    final videos = 'mp4,m2v,mkv,rmvb,wmv,avi,flv,mov,m4v'.split(',');
+    final radios = ['mp3'];
+    final pictures = 'png,jpg,jpeg,bmp,gif,webp,psd,svg,tiff'.split(',');
+    final documents = 'txt,xls,xlsx,doc,docx,pdf,ppt,pptx'.split(',');
+    if (videos.contains(type)) {
+      return 'video';
+    } else if (radios.contains(type)) {
+      return 'radio';
+    } else if (pictures.contains(type)) {
+      return 'picture';
+    } else if (documents.contains(type)) return 'document';
+  }
+
+  snakTip(context, String title, int time) {
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.redAccent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        duration: new Duration(milliseconds: time),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 }
