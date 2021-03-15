@@ -1,10 +1,12 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../wy-news/wy-news.dart';
 import '../words/random-words.dart';
-import '../news/news.dart';
-import '../amap-map.dart';
+import 'package:mint_app/media/mediaHome.dart';
 import '../amap-navigation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class comfun {
   Widget getMoreWidgetState(
@@ -30,6 +32,11 @@ class comfun {
         ),
       ),
     );
+  }
+
+  void removeShared() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
   }
 
   // 公共bottom tab
@@ -63,6 +70,7 @@ class comfun {
   getPageList() {
     return [
       RandomWords(),
+      mediaView(),
       wyNews(),
       amapNavigatePage('高德导航', '地图导航'),
     ];

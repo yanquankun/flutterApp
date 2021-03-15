@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:mint_app/common/comfun.dart';
 
 var _saved = new Set<WordPair>();
 
@@ -63,6 +64,8 @@ class _RandomWordsState extends State<RandomWords> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // 不显示返回按钮
+        // leading: Text(''),// 也可以不显示返回按钮
         // 跳转收藏页
         title: Text(
           "随机单词推荐",
@@ -77,6 +80,7 @@ class _RandomWordsState extends State<RandomWords> {
             icon: Icon(Icons.logout),
             tooltip: '退出',
             onPressed: () {
+              new comfun().removeShared();
               Navigator.popAndPushNamed(context, 'login');
             },
           ),

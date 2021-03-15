@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:amap_flutter_location/amap_location_option.dart';
-import 'dart:io';
+import 'package:mint_app/common/comfun.dart';
 import 'dart:async';
 
 class amapNavigatePage extends BasePage {
@@ -542,11 +542,14 @@ class _MapUiBodyState extends State<_MapUiBody> {
     return Scaffold(
       appBar: AppBar(
         title: Text('高德导航'),
+        automaticallyImplyLeading: false, // 不显示返回按钮
+        // leading: Text(''),// 也可以不显示返回按钮
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.logout),
             tooltip: '退出',
             onPressed: () {
+              new comfun().removeShared();
               Navigator.popAndPushNamed(context, 'login');
             },
           ),

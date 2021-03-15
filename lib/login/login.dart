@@ -7,7 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // 第三方图
 import 'package:mint_app/common/comfun.dart';
 import 'dart:convert';
 import 'package:mint_app/home.dart';
-import 'package:mint_app/login/regist.dart';
+import 'package:mint_app/common/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class loginView extends StatefulWidget {
   @override
@@ -15,6 +16,20 @@ class loginView extends StatefulWidget {
 }
 
 class _loginViewState extends State<loginView> {
+  // 保存登录信息
+  save(String userId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userId', userId);
+  }
+
+  Future<String> get() async {
+    var userId;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getString('userId');
+    print('login get userid is $userId');
+    return userId;
+  }
+
   // 焦点
   FocusNode _focusNodeUserName = new FocusNode();
   FocusNode _focusNodePassWord = new FocusNode();
@@ -32,11 +47,25 @@ class _loginViewState extends State<loginView> {
 
   Future<http.Response> loginUser(String username, String password) async {
     var data = null;
+    var userinfo = "";
     await realLogin(username, password).then((res) => {
           print(convert.jsonDecode(new Utf8Decoder().convert(res.bodyBytes))),
           data = convert.jsonDecode(new Utf8Decoder().convert(res.bodyBytes)),
           if (res.statusCode == 200 && data['msg'] == 'success')
             {
+              userGlobal.realUserInfo.addAll({
+                'username': data['data']['username'],
+                'guid': data['data']['guid'],
+                'id': data['data']['id'].toString(),
+                'email': data['data']['email'],
+                'phone': data['data']['phone'],
+                'birthday': data['data']['birthday'],
+              }),
+              userGlobal.realUserInfo.forEach((key, value) {
+                userinfo += '${key}:${value},';
+              }),
+              print('user info is : $userinfo'),
+              save(data['data']['guid']),
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -92,6 +121,26 @@ class _loginViewState extends State<loginView> {
   @override
   void initState() {
     super.initState();
+    get().then((String userId) {
+      if (userId != null) {
+        print('已登录：$userId');
+        new comfun().showCupertinoAlertDialog(
+            context: context,
+            title: '提示',
+            content: '已有登录记录，登陆中，1s后自动跳转~',
+            sureText: '确定');
+        Future.delayed(
+            new Duration(milliseconds: 1500),
+            () => {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => homeView(),
+                    ),
+                  ),
+                });
+      }
+    });
     //设置焦点监听
     _focusNodeUserName.addListener(_focusNodeListener);
     _focusNodePassWord.addListener(_focusNodeListener);

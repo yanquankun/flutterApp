@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../httpService/login-http.dart';
 import 'wy-news-list.dart';
+import 'package:mint_app/common/comfun.dart';
 
 class wyNews extends StatefulWidget {
   @override
@@ -12,6 +13,8 @@ class _wyNewsState extends State<wyNews> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // 不显示返回按钮
+        // leading: Text(''),// 也可以不显示返回按钮
         title: Text(
           "网易新闻分类",
           style: TextStyle(
@@ -24,6 +27,7 @@ class _wyNewsState extends State<wyNews> {
             icon: Icon(Icons.logout),
             tooltip: '退出',
             onPressed: () {
+              new comfun().removeShared();
               Navigator.popAndPushNamed(context, 'login');
             },
           ),
