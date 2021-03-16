@@ -6,11 +6,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'dart:convert';
 import 'package:mint_app/httpService/login-http.dart';
-import 'package:mint_app/common/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:file/file.dart';
 import 'package:mint_app/httpService/file-http.dart';
+import 'package:path_provider/path_provider.dart';
 
 class mediaView extends StatefulWidget {
   @override
@@ -45,8 +44,8 @@ class _mediaViewState extends State<mediaView> {
             }
           else
             {
-              ScaffoldMessenger.of(context).removeCurrentSnackBar(),
-              ScaffoldMessenger.of(context).showSnackBar(
+              Scaffold.of(context).removeCurrentSnackBar(),
+              Scaffold.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
                     '资源获取失败，请联系APP管理员!',
@@ -219,7 +218,7 @@ class _mediaViewState extends State<mediaView> {
                     color: Colors.white,
                     tooltip: '下载${source['name']}',
                     onPressed: () => {
-                      print('下载'),
+                      _download(source['name'], source['presignedUrl']),
                     },
                   ),
                 ),
@@ -236,7 +235,9 @@ class _mediaViewState extends State<mediaView> {
                           content: '确定要删除${source['name']}吗？',
                           sureText: '确定',
                           notText: '取消',
-                          sureFun: () => {print('删除')})
+                          sureFun: () => {
+                                _delete(source['name']),
+                              })
                     },
                   ),
                 ),
@@ -244,5 +245,69 @@ class _mediaViewState extends State<mediaView> {
             )),
           )),
     );
+  }
+
+  void _download(String fileName, String urlPath) async {
+    var resUrl = urlPath;
+
+    await getTemporaryDirectory().then((result) {
+      print('临时存放路径为：${result.path}');
+      //获取临时存放路径
+      HttpReqUtil.getInstance()
+          .downloadFile(resUrl, result.path + "/download-$fileName");
+    });
+  }
+
+  void _delete(String fileName) async {
+    print(fileName);
+    print(userId);
+    var data = null;
+    await deleteFileByUserId(userId, fileName).then((res) => {
+          data = convert.jsonDecode(new Utf8Decoder().convert(res.bodyBytes)),
+          if (res.statusCode == 200 && data['code'] == 200)
+            {
+              Scaffold.of(context).removeCurrentSnackBar(),
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    data['msg'],
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                  backgroundColor: Colors.redAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  duration: const Duration(milliseconds: 2000),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              ),
+              getSources(userId),
+            }
+          else
+            {
+              Scaffold.of(context).removeCurrentSnackBar(),
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    '删除失败，请联系APP管理员!',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                  backgroundColor: Colors.redAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  duration: const Duration(milliseconds: 2000),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              ),
+              print('Request failed with status: ${res.statusCode}.'),
+            }
+        });
   }
 }

@@ -144,7 +144,6 @@ Future<http.Response> userRegist(String username, String password) async {
 
 // 通过userId获取minio资源列表及文件播放路径
 Future<http.Response> getSourceByUserId(String userId) async {
-
   Map<String, String> requestHeaders = {
     'Content-type': 'application/json',
   };
@@ -152,5 +151,19 @@ Future<http.Response> getSourceByUserId(String userId) async {
   var client = http.Client();
   return await client.post(
       'http://39.97.119.181:9400/minio/getSourceByUserId?userId=${userId}',
+      headers: requestHeaders);
+}
+
+// 通过用户id删除minio一个或多个文件
+// filenames多个文件用;分割
+Future<http.Response> deleteFileByUserId(
+    String userId, String filenames) async {
+  Map<String, String> requestHeaders = {
+    'Content-type': 'application/json',
+  };
+
+  var client = http.Client();
+  return await client.post(
+      'http://39.97.119.181:9400/minio/deleteFileByUserId?userId=${userId}&fileNames=$filenames',
       headers: requestHeaders);
 }

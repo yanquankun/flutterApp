@@ -75,8 +75,8 @@ class _loginViewState extends State<loginView> {
             }
           else
             {
-              ScaffoldMessenger.of(context).removeCurrentSnackBar(),
-              ScaffoldMessenger.of(context).showSnackBar(
+              Scaffold.of(context).removeCurrentSnackBar(),
+              Scaffold.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
                     '用户名或密码不正确，请重新输入!',

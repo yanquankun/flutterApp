@@ -56,19 +56,19 @@ class _homeViewState extends State<homeView> {
         items: [
           BottomNavigationBarItem(
               label: '单词推荐',
-              tooltip: '随机单词推荐',
+              // tooltip: '随机单词推荐',
               icon: Icon(Icons.remove_red_eye, color: Colors.amber)),
           BottomNavigationBarItem(
               label: '音频',
-              tooltip: '音阙诗听',
+              // tooltip: '音阙诗听',
               icon: Icon(Icons.music_video, color: Colors.amber)),
           BottomNavigationBarItem(
               label: '新闻',
-              tooltip: '网易新闻',
+              // tooltip: '网易新闻',
               icon: Icon(Icons.new_releases_outlined, color: Colors.amber)),
           BottomNavigationBarItem(
               label: '实时地图',
-              tooltip: '高德地图',
+              // tooltip: '高德地图',
               icon: Icon(Icons.maps_ugc_rounded, color: Colors.amber)),
         ],
         onTap: (value) {

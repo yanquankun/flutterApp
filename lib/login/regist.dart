@@ -48,8 +48,8 @@ class _registState extends State<regist> {
             }
           else
             {
-              ScaffoldMessenger.of(context).removeCurrentSnackBar(),
-              ScaffoldMessenger.of(context).showSnackBar(
+              Scaffold.of(context).removeCurrentSnackBar(),
+              Scaffold.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
                     data['msg'],
