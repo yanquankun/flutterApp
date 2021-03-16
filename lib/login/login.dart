@@ -130,7 +130,7 @@ class _loginViewState extends State<loginView> {
             content: '已有登录记录，登陆中，1s后自动跳转~',
             sureText: '确定');
         Future.delayed(
-            new Duration(milliseconds: 1500),
+            new Duration(milliseconds: 1000),
             () => {
                   Navigator.pushReplacement(
                     context,

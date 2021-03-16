@@ -5,6 +5,7 @@ import '../words/random-words.dart';
 import 'package:mint_app/media/mediaHome.dart';
 import '../amap-navigation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mint_app/media/imageHome.dart';
 
 class comfun {
   Widget getMoreWidgetState(
@@ -67,20 +68,66 @@ class comfun {
   // 对应tab body页面
   getPageList() {
     return [
-      RandomWords(),
+      picsView(),
       mediaView(),
       wyNews(),
       amapNavigatePage('高德导航', '地图导航'),
     ];
   }
 
-  showAlert(context, String title, Widget msgWidget,
-      {String sureText, notText, Function notFun}) async {
+  // 纯净展示框
+  showPureModal(context, String title, Widget msgWidget,
+      {String sureText,
+      notText,
+      Function notFun,
+      bool barrierDismissible = false}) async {
     final css = TextStyle(
         fontSize: 18, color: Colors.black, fontWeight: FontWeight.w700);
     await showDialog(
       context: context,
-      barrierDismissible: false, // 点击外部不关闭
+      barrierDismissible: barrierDismissible, // 点击外部不关闭
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title, style: css),
+          content: msgWidget,
+          actions: <Widget>[
+            // ignore: deprecated_member_use
+            notText != null
+                ? FlatButton(
+                    child: Text(notText, style: css),
+                    onPressed: () {
+                      if (notFun != null) {
+                        Function.apply(notFun, null);
+                      }
+                      Navigator.of(context).pop(false);
+                    },
+                  )
+                : null,
+            // ignore: deprecated_member_use
+            sureText != null
+                ? FlatButton(
+                    child: Text(sureText, style: css),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                  )
+                : null,
+          ],
+        );
+      },
+    );
+  }
+
+  showAlert(context, String title, Widget msgWidget,
+      {String sureText,
+      notText,
+      Function notFun,
+      bool barrierDismissible = false}) async {
+    final css = TextStyle(
+        fontSize: 18, color: Colors.black, fontWeight: FontWeight.w700);
+    await showDialog(
+      context: context,
+      barrierDismissible: barrierDismissible, // 点击外部不关闭
       builder: (context) {
         return AlertDialog(
           title: Text(title, style: css),
@@ -199,7 +246,9 @@ class comfun {
   }
 
   snakTip(context, String title, int time) {
+    // ignore: deprecated_member_use
     Scaffold.of(context).removeCurrentSnackBar();
+    // ignore: deprecated_member_use
     Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(

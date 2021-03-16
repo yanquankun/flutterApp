@@ -170,7 +170,7 @@ class _mediaViewState extends State<mediaView> {
       child: InkWell(
           onTap: () => {
                 player.setDataSource(source['presignedUrl'], autoPlay: true),
-                comfun().showAlert(
+                comfun().showPureModal(
                     context,
                     source['name'],
                     Container(
@@ -178,13 +178,14 @@ class _mediaViewState extends State<mediaView> {
                         child: FijkView(
                           player: player,
                           width: double.maxFinite,
+                          cover: AssetImage('assets/icon/launcher_icon.jpg'),
                           fit: FijkFit(
                             sizeFactor: 1.0,
                             aspectRatio: -1,
                             alignment: Alignment.center,
                           ),
-                          height: 300,
-                          color: Colors.lightBlueAccent,
+                          height: 200,
+                          color: Colors.white,
                         )),
                     notText: '关闭',
                     notFun: () => {
@@ -218,7 +219,8 @@ class _mediaViewState extends State<mediaView> {
                     color: Colors.white,
                     tooltip: '下载${source['name']}',
                     onPressed: () => {
-                      _download(source['name'], source['presignedUrl']),
+                      _download(
+                          context, source['name'], source['presignedUrl']),
                     },
                   ),
                 ),
@@ -247,20 +249,18 @@ class _mediaViewState extends State<mediaView> {
     );
   }
 
-  void _download(String fileName, String urlPath) async {
+  void _download(context, String fileName, String urlPath) async {
     var resUrl = urlPath;
 
     await getTemporaryDirectory().then((result) {
       print('临时存放路径为：${result.path}');
       //获取临时存放路径
       HttpReqUtil.getInstance()
-          .downloadFile(resUrl, result.path + "/download-$fileName");
+          .downloadFile(resUrl, result.path + "/download-$fileName", context);
     });
   }
 
   void _delete(String fileName) async {
-    print(fileName);
-    print(userId);
     var data = null;
     await deleteFileByUserId(userId, fileName).then((res) => {
           data = convert.jsonDecode(new Utf8Decoder().convert(res.bodyBytes)),

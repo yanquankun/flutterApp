@@ -3,6 +3,7 @@ import 'package:file/file.dart';
 import 'dart:convert' as convert;
 import 'package:dio/dio.dart';
 import 'package:common_utils/common_utils.dart';
+import 'package:mint_app/common/comfun.dart';
 
 class HttpReqUtil {
   Dio dio = null;
@@ -81,10 +82,21 @@ class HttpReqUtil {
   /**
    * 下载文件
    */
-  Future<Response> downloadFile(String resUrl, String savePath) async {
+  Future<Response> downloadFile(String resUrl, String savePath, context) async {
     // 相对路劲
     return await dio.download(resUrl, savePath,
         onReceiveProgress: (int loaded, int total) {
+      comfun().snakTip(
+          context,
+          "下载进度：" +
+              NumUtil.getNumByValueDouble(loaded / total * 100, 2)
+                  .toStringAsFixed(2) +
+              "%",
+          2000);
+      if (NumUtil.getNumByValueDouble(loaded / total * 100, 2)
+              .toStringAsFixed(0)=='100') {
+        comfun().snakTip(context, '下载完成，存放路径为$savePath', 3000);
+      }
       print("下载进度：" +
           NumUtil.getNumByValueDouble(loaded / total * 100, 2)
               .toStringAsFixed(2) +

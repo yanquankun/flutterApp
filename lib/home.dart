@@ -54,10 +54,14 @@ class _homeViewState extends State<homeView> {
         fixedColor: Colors.blue,
         currentIndex: this._currentIndex,
         items: [
+          // BottomNavigationBarItem(
+          //     label: '单词推荐',
+          //     // tooltip: '随机单词推荐',
+          //     icon: Icon(Icons.remove_red_eye, color: Colors.amber)),
           BottomNavigationBarItem(
-              label: '单词推荐',
-              // tooltip: '随机单词推荐',
-              icon: Icon(Icons.remove_red_eye, color: Colors.amber)),
+              label: '图阁',
+              // tooltip: '音阙诗听',
+              icon: Icon(Icons.image, color: Colors.amber)),
           BottomNavigationBarItem(
               label: '音频',
               // tooltip: '音阙诗听',
